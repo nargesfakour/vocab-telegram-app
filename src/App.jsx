@@ -69,7 +69,7 @@ For the word "${word}", respond ONLY with a JSON object (no markdown, no backtic
 }`;
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -98,7 +98,7 @@ For the word "${word}", respond ONLY with a JSON object (no markdown, no backtic
 // ─── Level Badge ──────────────────────────────────────────────────────────────
 function LevelBadge({ level }) {
   const labels = ["جدید", "۱ روز", "۳ روز", "۷ روز", "۱۴ روز", "۳۰ روز"];
-  const colors = ["#6366f1","#8b5cf6","#3b82f6","#10b981","#f59e0b","#ef4444"];
+  const colors = ["#6366f1", "#8b5cf6", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
   const c = colors[level ?? 0];
   return (
     <span style={{
@@ -287,7 +287,7 @@ export default function App() {
     saveWords(updated);
   }, []);
 
-const handleSearch = async () => {
+  const handleSearch = async () => {
     const w = input.trim().toLowerCase();
     if (!w) return;
     if (words.find((x) => x.word === w)) { setError("این کلمه قبلاً اضافه شده!"); return; }
@@ -295,9 +295,9 @@ const handleSearch = async () => {
     try {
       const info = await fetchWordInfo(w);
       setFetchedInfo(info);
-    } catch (err) { 
+    } catch (err) {
       // نشان دادن دلیل اصلی خطا روی صفحه
-      setError(`خطا: ${err.message || "مشکل نامشخص"}`); 
+      setError(`خطا: ${err.message || "مشکل نامشخص"}`);
       console.error(err);
     }
     setLoading(false);
