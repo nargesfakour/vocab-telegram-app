@@ -49,7 +49,7 @@ const tgTheme = {
 };
 
 // ─── AI fetch ─────────────────────────────────────────────────────────────────
-const GEMINI_API_KEY = "";
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_KEY;;
 
 async function fetchWordInfo(word) {
   const prompt = `You are a helpful English teacher for a Persian beginner (A1-A2 level).
