@@ -275,7 +275,7 @@ export default function App() {
     saveWords(updated);
   }, []);
 
-  const handleSearch = async () => {
+const handleSearch = async () => {
     const w = input.trim().toLowerCase();
     if (!w) return;
     if (words.find((x) => x.word === w)) { setError("این کلمه قبلاً اضافه شده!"); return; }
@@ -283,10 +283,14 @@ export default function App() {
     try {
       const info = await fetchWordInfo(w);
       setFetchedInfo(info);
-    } catch { setError("خطا در دریافت اطلاعات. دوباره امتحان کن."); }
+    } catch (err) { 
+      // نشان دادن دلیل اصلی خطا روی صفحه
+      setError(`خطا: ${err.message || "مشکل نامشخص"}`); 
+      console.error(err);
+    }
     setLoading(false);
   };
-
+  
   const handleSave = () => {
     if (!fetchedInfo) return;
     const newWord = {
