@@ -49,6 +49,8 @@ const tgTheme = {
 };
 
 // ─── AI fetch ─────────────────────────────────────────────────────────────────
+const GEMINI_API_KEY = "";
+
 async function fetchWordInfo(word) {
   const prompt = `You are a helpful English teacher for a Persian beginner (A1-A2 level).
 For the word "${word}", respond ONLY with a JSON object (no markdown, no backticks):
@@ -65,17 +67,19 @@ For the word "${word}", respond ONLY with a JSON object (no markdown, no backtic
   "example_fa": "ترجمه فارسی جمله مثال",
   "tip_fa": "یک نکته کوتاه برای یادآوری به فارسی"
 }`;
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1000,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.3 },
+      }),
+    }
+  );
   const data = await res.json();
-  const text = data.content.map((i) => i.text || "").join("");
+  const text = data.candidates[0].content.parts[0].text;
   return JSON.parse(text.replace(/```json|```/g, "").trim());
 }
 
