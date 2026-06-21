@@ -67,6 +67,7 @@ For the word "${word}", respond ONLY with a JSON object (no markdown, no backtic
   "example_fa": "ترجمه فارسی جمله مثال",
   "tip_fa": "یک نکته کوتاه برای یادآوری به فارسی"
 }`;
+
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
     {
@@ -78,11 +79,22 @@ For the word "${word}", respond ONLY with a JSON object (no markdown, no backtic
       }),
     }
   );
+
   const data = await res.json();
+
+  // ─── بخش جدید برای مچ کردن خطای گوگل ───
+  if (data.error) {
+    throw new Error(`گوگل خطا داد: [${data.error.status}] ${data.error.message}`);
+  }
+
+  if (!data.candidates || data.candidates.length === 0) {
+    throw new Error("پاسخی از کاندیداهای گوگل دریافت نشد. ساختار پاسخ تغییر کرده است.");
+  }
+  // ───────────────────────────────────────
+
   const text = data.candidates[0].content.parts[0].text;
   return JSON.parse(text.replace(/```json|```/g, "").trim());
 }
-
 // ─── Level Badge ──────────────────────────────────────────────────────────────
 function LevelBadge({ level }) {
   const labels = ["جدید", "۱ روز", "۳ روز", "۷ روز", "۱۴ روز", "۳۰ روز"];
@@ -290,7 +302,7 @@ const handleSearch = async () => {
     }
     setLoading(false);
   };
-  
+
   const handleSave = () => {
     if (!fetchedInfo) return;
     const newWord = {
